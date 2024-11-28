@@ -1,84 +1,57 @@
 import time
-import random
-from itertools import cycle
-from colorama import Fore, Back, Style, init
+from datetime import datetime
 
-# Initialize colorama
-init(autoreset=True)
+# Result pattern
+RESULT_PATTERN = ["SMALL", "BIG", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "SMALL", "BIG", "BIG", "SMALL", "BIG", "SMALL", "SMALL"]
 
-# Predefined pattern for results
-result_pattern = [
-    "BIG", "BIG", "BIG", "SMALL", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "SMALL",
-    "BIG", "SMALL", "SMALL", "BIG", "SMALL", "BIG", "SMALL", "SMALL", "BIG", "SMALL",
-    "SMALL", "SMALL", "BIG", "BIG", "SMALL", "SMALL", "SMALL", "BIG", "SMALL", "SMALL",
-    "BIG", "SMALL", "SMALL", "SMALL", "BIG", "BIG", "SMALL", "SMALL", "SMALL", "BIG"
-]
+# Function to simulate an advanced server loading animation
+def loading_server():
+    print("\033[1;34m" + "CONNECTING TO BN LAST KING HACKER SERVER..." + "\033[0m")
+    for i in range(1, 101, 20):
+        time.sleep(0.5)
+        print(f"\033[1;36mLOADING... {i}%\033[0m")
+    time.sleep(0.5)
+    print("\033[1;32mSERVER CONNECTED SUCCESSFULLY.\033[0m")
+    time.sleep(0.5)
+    print("\033[1;35mACCESSING RESULTS...\033[0m")
+    time.sleep(1)
 
-# Cyclic iterator for results
-results_iterator = cycle(result_pattern)
+# Function to display the redesigned table box
+def display_result_table(period, result):
+    print("\033[1;33m" + "+" + "-" * 38 + "+\033[0m")  # Yellow table top border
+    print(f"\033[1;33m| Period Number:\033[0m \033[1;32m{period:<24}\033[1;33m|\033[0m")  # Green text for period
+    print("\033[1;33m+" + "-" * 38 + "+\033[0m")  # Yellow middle border
+    print(f"\033[1;33m| Result:        \033[0m \033[1;32m{result:<24}\033[1;33m|\033[0m")  # Green text for result
+    print("\033[1;33m+" + "-" * 38 + "+\033[0m")  # Yellow table bottom border
 
-# ASCII Art Headers
-def hacker_header():
-    print(Style.BRIGHT + Fore.GREEN + "=" * 60)
-    print(Fore.LIGHTCYAN_EX + "        🚀 BN LAST KING HACKER SYSTEM 🚀")
-    print(Fore.GREEN + "       [ ONLINE PREDICTING TOOL - V1.0 ]")
-    print(Fore.YELLOW + "       POWERED BY: HACK SUPPORT SYSTEM")
-    print(Style.BRIGHT + Fore.GREEN + "=" * 60)
+# Function to generate period number based on UTC
+def generate_period():
+    now = datetime.utcnow()
+    total_minutes = now.hour * 60 + now.minute
+    period_number = int(now.strftime("%Y%m%d")) * 100000 + 10001 + total_minutes
+    return period_number
 
-# Function to simulate fetching the period number from Java code
-def get_period_number_from_java():
-    current_time = time.time()
-    total_seconds = int(current_time)
-    remaining_seconds = 30 - (total_seconds % 30)
-    total_minutes = total_seconds // 60
-    period_number = total_minutes * 2 + (1 if (total_seconds % 60) >= 30 else 0)
-    return period_number, remaining_seconds
-
-# Loading animation
-def loading_animation():
-    print(Style.BRIGHT + Fore.LIGHTGREEN_EX + "[LOADING RESULT...]", end="")
-    for _ in range(10):
-        print(Fore.GREEN + ".", end="", flush=True)
-        time.sleep(0.2)
-    print("\n" + Fore.LIGHTCYAN_EX + "[RESULT LOADED SUCCESSFULLY]")
-
-# Display results with hacker-style design
-def display_results():
-    hacker_header()
-    last_period_number = None
+# Main function to run the script
+def main():
+    print("\033[1;31m" + "=" * 50 + "\033[0m")  # Red header
+    print("\033[1;31m BN LAST KING PREDICTION SYSTEM - HACKER STYLE\033[0m")
+    print("\033[1;31m" + "=" * 50 + "\033[0m\n")  # Red footer
+    
+    current_period = generate_period()
+    index = 0
 
     while True:
-        # Get current period number and remaining seconds
-        period_number, remaining_seconds = get_period_number_from_java()
+        loading_server()  # Show loading animation
+        
+        # Generate the next period and result
+        new_period = generate_period()
+        if new_period != current_period:  # Show result only when period changes
+            result = RESULT_PATTERN[index % len(RESULT_PATTERN)]  # Cycle through the pattern
+            display_result_table(new_period, result)  # Display result in a table
+            index += 1
+            current_period = new_period
 
-        # Check if the period number has changed
-        if period_number != last_period_number:
-            # Loading animation
-            loading_animation()
+        time.sleep(1)  # Check every second for period change
 
-            # Fetch the next result from the pattern
-            next_result = next(results_iterator)
-
-            # Display the result in hacker style
-            print(Fore.GREEN + Style.BRIGHT + f"🌐 Online System: [ACTIVE]")
-            print(Fore.LIGHTMAGENTA_EX + f"🛠️ Server Status: [RUNNING]")
-            print(Fore.YELLOW + f"Period Number: {Fore.LIGHTCYAN_EX}{period_number}")
-            if next_result == "BIG":
-                print(Fore.LIGHTGREEN_EX + f"💻 HACKED RESULT: {next_result} ♥️")
-            else:
-                print(Fore.LIGHTRED_EX + f"💻 HACKED RESULT: {next_result} 💚")
-            print(Fore.LIGHTCYAN_EX + "🔐 Hack Tool Status: [ENCRYPTED]")
-            print(Fore.MAGENTA + "-" * 60)
-            last_period_number = period_number
-
-        # Display the countdown timer
-        print(
-            Fore.CYAN + Style.BRIGHT +
-            f"⌛ Remaining Time: {Fore.YELLOW}{remaining_seconds} seconds",
-            end="\r"
-        )
-        time.sleep(1)
-
-# Main function
 if __name__ == "__main__":
-    display_results()
+    main()
